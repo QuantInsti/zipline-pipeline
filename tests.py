@@ -7,11 +7,11 @@ from blueshift_data.readers import Library
 
 from zipline_pipeline.pipeline import Pipeline, SimplePipelineEngine
 from zipline_pipeline.pipeline import CustomFilter, CustomFactor
-from zipline_pipeline.pipeline.data import EquityPricing
+#from zipline_pipeline.pipeline.data import EquityPricing
 from zipline_pipeline.pipeline.loaders import EquityPricingLoader
 import zipline_pipeline.pipeline.domain as domain
 from blueshift_data.pipeline.domain import PricingDomain, BLUESHIFT_PIPELINE_SUPPORT
-from blueshift_data.pipeline.data import BlueshiftEquityPricing
+from blueshift_data.pipeline.data import EquityPricing
 
 def filter_universe(universe):
     class FilteredUniverse(CustomFilter):
@@ -55,7 +55,7 @@ pipeline_loader = EquityPricingLoader.without_fx(daily_store, adj_handler)
 PricingDomain.set_store(daily_store)
 
 def get_loader(column):
-    if column in BlueshiftEquityPricing.columns:
+    if column in EquityPricing.columns:
         return pipeline_loader
     raise ValueError(
         "No PipelineLoader registered for column %s." % column

@@ -14,7 +14,7 @@ iso4217
 
 # others
 logbook
-interface
+python-interface==1.5.3
 
 # some calendar utility
 pytz>=2018.0

@@ -32,10 +32,15 @@ ctypedef object DatetimeIndex_t
 ctypedef object Int64Index_t
 
 from zipline_pipeline.lib.adjustment import Float64Multiply
-from zipline.assets.asset_writer import (
-    SQLITE_MAX_VARIABLE_NUMBER as SQLITE_MAX_IN_STATEMENT,
-)
-from zipline.utils.pandas_utils import timedelta_to_integral_seconds
+
+try:
+    from zipline.assets.asset_writer import (
+        SQLITE_MAX_VARIABLE_NUMBER as SQLITE_MAX_IN_STATEMENT,
+    )
+except ImportError:
+    SQLITE_MAX_IN_STATEMENT = 100
+
+from zipline_pipeline.utils.pandas_utils import timedelta_to_integral_seconds
 
 
 _SID_QUERY_TEMPLATE = """
@@ -263,6 +268,99 @@ cpdef load_adjustments_from_sqlite(object adjustments_db,
         assets,
     )
 
+    cdef dict price_adjustments = {}
+    cdef dict volume_adjustments = {}
+    cdef dict result = {}
+    cdef dict asset_ixs = {}  # Cache sid lookups here.
+    cdef dict date_ixs = {}
+    cdef:
+        int i
+        int dt
+        int64_t sid
+        float64_t ratio
+        int eff_date
+        int date_loc
+        Py_ssize_t asset_ix
+        dict col_adjustments
+
+    cdef ndarray[int64_t, ndim=1] _dates_seconds = \
+        dates.values.astype('datetime64[s]').view(int64)
+
+    # Pre-populate date index cache.
+    for i, dt in enumerate(_dates_seconds):
+        date_ixs[dt] = i
+
+    # splits affect prices and volumes, volumes is the inverse
+    for sid, ratio, eff_date in splits:
+        if eff_date < start_date:
+            continue
+
+        date_loc = _lookup_dt(date_ixs, eff_date, _dates_seconds)
+
+        if not PyDict_Contains(asset_ixs, sid):
+            asset_ixs[sid] = assets.get_loc(sid)
+        asset_ix = asset_ixs[sid]
+
+        if should_include_price_adjustments:
+            price_adj = Float64Multiply(0, date_loc, asset_ix, asset_ix, ratio)
+            price_adjustments.setdefault(date_loc, []).append(price_adj)
+
+        if should_include_volume_adjustments:
+            volume_adj = Float64Multiply(
+                0, date_loc, asset_ix, asset_ix, 1.0 / ratio
+            )
+            volume_adjustments.setdefault(date_loc, []).append(volume_adj)
+
+    # mergers and dividends affect prices only
+    for sid, ratio, eff_date in chain(mergers, dividends):
+        if eff_date < start_date:
+            continue
+
+        date_loc = _lookup_dt(date_ixs, eff_date, _dates_seconds)
+
+        if not PyDict_Contains(asset_ixs, sid):
+            asset_ixs[sid] = assets.get_loc(sid)
+        asset_ix = asset_ixs[sid]
+
+        price_adj = Float64Multiply(0, date_loc, asset_ix, asset_ix, ratio)
+        price_adjustments.setdefault(date_loc, []).append(price_adj)
+
+    if should_include_price_adjustments:
+        result['price'] = price_adjustments
+    if should_include_volume_adjustments:
+        result['volume'] = volume_adjustments
+
+    return result
+
+cpdef process_adjustments(DatetimeIndex_t dates,
+                          Int64Index_t assets,
+                          list splits,
+                          list dividends,
+                          list mergers,
+                          bool should_include_splits,
+                          bool should_include_mergers,
+                          bool should_include_dividends,
+                          str adjustment_type):
+    if not (adjustment_type == 'price' or
+            adjustment_type == 'volume' or
+            adjustment_type == 'all'):
+        raise ValueError(
+            "%s is not a valid adjustment type.\n"
+            "Valid adjustment types are 'price', 'volume', and 'all'.\n" % (
+                adjustment_type,
+            )
+        )
+
+    cdef bool should_include_price_adjustments = (
+        adjustment_type == 'all' or adjustment_type == 'price'
+    )
+    cdef bool should_include_volume_adjustments = (
+        adjustment_type == 'all' or adjustment_type == 'volume'
+    )
+    
+    cdef int start_date = timedelta_to_integral_seconds(dates[0] - EPOCH)
+    cdef int end_date = timedelta_to_integral_seconds(dates[-1] - EPOCH)
+    
     cdef dict price_adjustments = {}
     cdef dict volume_adjustments = {}
     cdef dict result = {}

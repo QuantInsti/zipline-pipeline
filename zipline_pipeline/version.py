@@ -21,7 +21,7 @@ __copyright__ = "Copyright 2019"
 __author__ = "QuantInsti Quantitative Learnings Pvt Ltd."
 __url__ = "https://quantra-blueshift.quantinsti.com"
 __license__ = 'Apache 2.0'
-__version__ = "1.4.0"
+__version__ = "0.0.1"
 __maintainer__ = "QuantInsti Quantitative Learnings Pvt Ltd."
 __email__ = 'blueshift-dev@quantinsti.com'
 __status__ = "Development"
@@ -37,7 +37,7 @@ __package_classifier__ = [
         'Environment :: Console'
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: Implementation :: CPython',
         'Operating System :: OS Independent',

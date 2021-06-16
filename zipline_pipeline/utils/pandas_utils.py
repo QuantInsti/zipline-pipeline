@@ -220,10 +220,12 @@ def ignore_pandas_nan_categorical_warning():
         )
         yield
 
-
-_INDEXER_NAMES = [
-    '_' + name for (name, _) in pd.core.indexing.get_indexers_list()
-]
+try:
+    _INDEXER_NAMES = [
+        '_' + name for (name, _) in pd.core.indexing.get_indexers_list()
+    ]
+except:
+    _INDEXER_NAMES = []
 
 
 def clear_dataframe_indexer_caches(df):

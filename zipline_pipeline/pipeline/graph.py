@@ -453,14 +453,14 @@ class ExecutionPlan(TermGraph):
         """
         return {
             term: attrs['extra_rows']
-            for term, attrs in iteritems(self.graph.node)
+            for term, attrs in iteritems(self.graph.nodes)
         }
 
     def _ensure_extra_rows(self, term, N):
         """
         Ensure that we're going to compute at least N extra rows of `term`.
         """
-        attrs = self.graph.node[term]
+        attrs = self.graph.nodes[term]
         attrs['extra_rows'] = max(N, attrs.get('extra_rows', 0))
 
     def mask_and_dates_for_term(self,
@@ -503,7 +503,7 @@ class ExecutionPlan(TermGraph):
     def _assert_all_loadable_terms_specialized_to(self, domain):
         """Make sure that we've specialized all loadable terms in the graph.
         """
-        for term in self.graph.node:
+        for term in self.graph.nodes:
             if isinstance(term, LoadableTerm):
                 assert term.domain is domain
 

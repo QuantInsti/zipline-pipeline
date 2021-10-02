@@ -387,9 +387,9 @@ cpdef process_adjustments(DatetimeIndex_t dates,
     for sid, ratio, eff_date in splits:
         if eff_date < start_date:
             continue
-
+        
         date_loc = _lookup_dt(date_ixs, eff_date, _dates_seconds)
-
+        
         if not PyDict_Contains(asset_ixs, sid):
             asset_ixs[sid] = assets.get_loc(sid)
         asset_ix = asset_ixs[sid]

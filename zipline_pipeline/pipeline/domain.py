@@ -23,9 +23,9 @@ import pandas as pd
 import pytz
 
 try:
-    from trading_calendars import get_calendar
-except ImportError:
     from blueshift_calendar import get_calendar
+except ImportError:
+    from trading_calendars import get_calendar
 
 from zipline_pipeline.country import CountryCode
 from zipline_pipeline.utils.formatting import bulleted_list

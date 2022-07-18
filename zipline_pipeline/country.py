@@ -4,6 +4,10 @@ from iso3166 import countries_by_name
 
 
 def code(name):
+    if 'TÜRKIYE' in countries_by_name:
+        entry = countries_by_name.pop('TÜRKIYE')
+        countries_by_name['TURKEY'] = entry
+        
     return countries_by_name[name].alpha2
 
 

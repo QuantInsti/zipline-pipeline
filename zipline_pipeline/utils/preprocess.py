@@ -243,5 +243,9 @@ def _build_preprocessed_function(func,
             return new_func
 
     args['co_firstlineno'] = original_code.co_firstlineno
-    new_func.__code__ = CodeType(*map(getitem(args), _code_argorder))
+    try:
+        new_func.__code__ = CodeType(*map(getitem(args), _code_argorder))
+    except TypeError:
+        # python 3.8
+        new_func.__code__.replace(**args)
     return new_func

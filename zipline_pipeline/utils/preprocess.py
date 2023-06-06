@@ -246,6 +246,7 @@ def _build_preprocessed_function(func,
     try:
         new_func.__code__ = CodeType(*map(getitem(args), _code_argorder))
     except TypeError:
-        # python 3.8
-        new_func.__code__.replace(**args)
+        # python >3.8
+        # new_func.__code__.replace(**args)
+        new_func.__code__.replace(co_firstlineno=args['co_firstlineno'])
     return new_func

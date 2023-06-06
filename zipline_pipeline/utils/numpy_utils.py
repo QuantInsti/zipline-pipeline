@@ -3,7 +3,7 @@ Utilities for working with numpy arrays.
 """
 from collections import OrderedDict
 from datetime import datetime
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 from warnings import (
     catch_warnings,
     filterwarnings,

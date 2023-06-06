@@ -10,7 +10,7 @@ import warnings
 import numpy as np
 import pandas as pd
 from pytz import UTC
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 pandas_version = StrictVersion(pd.__version__)
 new_pandas = pandas_version >= StrictVersion('0.19')

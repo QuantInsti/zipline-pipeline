@@ -9,7 +9,10 @@ from scipy.stats import (
 try:
     from zipline_pipeline.assets import Asset
 except ImportError:
-    from blueshift_objects.assets._assets import Asset
+    try:
+        from blueshift.lib.assets._assets import Asset
+    except:
+        from blueshift_objects.assets._assets import Asset
     
 from zipline_pipeline.errors import IncompatibleTerms
 from zipline_pipeline.pipeline.factors import CustomFactor

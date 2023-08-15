@@ -13,7 +13,11 @@ from numpy import (
 )
 from six import with_metaclass
 
-from blueshift_objects.assets._assets import Asset
+try:
+    from blueshift.lib.assets._assets import Asset
+except:
+    from blueshift_objects.assets._assets import Asset
+    
 from zipline_pipeline.errors import (
     DTypeNotSpecified,
     InvalidOutputName,

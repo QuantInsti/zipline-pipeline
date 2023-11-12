@@ -9,7 +9,7 @@ from toolz.curried.operator import getitem
 from six import viewkeys, exec_, PY3
 
 from zipline_pipeline.utils.compat import getargspec, wraps
-
+from inspect import getfullargspec
 
 _code_argorder = (
     ('co_argcount', 'co_kwonlyargcount') if PY3 else ('co_argcount',)
@@ -80,7 +80,8 @@ def preprocess(*_unused, **processors):
         raise TypeError("preprocess() doesn't accept positional arguments")
 
     def _decorator(f):
-        args, varargs, varkw, defaults = argspec = getargspec(f)
+        #args, varargs, varkw, defaults = argspec = getargspec(f)
+        args, varargs, varkw, defaults,_,_,_ = argspec = getfullargspec(f)
         if defaults is None:
             defaults = ()
         no_defaults = (NO_DEFAULT,) * (len(args) - len(defaults))

@@ -6,13 +6,7 @@ from scipy.stats import (
     spearmanr,
 )
 
-try:
-    from zipline_pipeline.assets import Asset
-except ImportError:
-    try:
-        from blueshift.lib.assets._assets import Asset
-    except:
-        from blueshift_objects.assets._assets import Asset
+from blueshift.lib.assets._assets import MarketData as Asset
     
 from zipline_pipeline.errors import IncompatibleTerms
 from zipline_pipeline.pipeline.factors import CustomFactor
@@ -236,7 +230,7 @@ class RollingPearsonOfReturns(RollingPearson):
 
     Parameters
     ----------
-    target : zipline_pipeline.assets.Asset
+    target : blueshift.lib.assets._assets.Asset
         The asset to correlate with all other assets.
     returns_length : int >= 2
         Length of the lookback window over which to compute returns. Daily
@@ -326,7 +320,7 @@ class RollingSpearmanOfReturns(RollingSpearman):
 
     Parameters
     ----------
-    target : zipline_pipeline.assets.Asset
+    target : blueshift.lib.assets._assets.Asset
         The asset to correlate with all other assets.
     returns_length : int >= 2
         Length of the lookback window over which to compute returns. Daily
@@ -376,7 +370,7 @@ class RollingLinearRegressionOfReturns(RollingLinearRegression):
 
     Parameters
     ----------
-    target : zipline_pipeline.assets.Asset
+    target : blueshift.lib.assets._assets.Asset
         The asset to regress against all other assets.
     returns_length : int >= 2
         Length of the lookback window over which to compute returns. Daily

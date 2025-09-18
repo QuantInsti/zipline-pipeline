@@ -583,7 +583,7 @@ class SliceMixin(UniversalMixin):
     ----------
     term : zipline_pipeline.pipeline.Term
         The term from which to extract a column of data.
-    asset : zipline_pipeline.assets.Asset
+    asset : blueshift.lib.assets._assets.Asset
         The asset corresponding to the column of `term` to be extracted.
 
     Notes

@@ -13,10 +13,7 @@ from numpy import (
 )
 from six import with_metaclass
 
-try:
-    from blueshift.lib.assets._assets import Asset
-except:
-    from blueshift_objects.assets._assets import Asset
+from blueshift.lib.assets._assets import MarketData as Asset
     
 from zipline_pipeline.errors import (
     DTypeNotSpecified,
